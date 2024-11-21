@@ -14,11 +14,14 @@ const Item = require('./models/Item');
 // Skapa ett nytt objekt
 app.post('/items', async (req, res) => {
     try {
+        console.log("Request body:", req.body); // Loggar inkommande data
         const newItem = new Item(req.body);
         const savedItem = await newItem.save();
+        console.log("Saved item:", savedItem); // Loggar det sparade objektet
         res.status(201).json(savedItem);
     } catch (err) {
-        res.status(500).json(err);
+        console.error("Error in POST /items:", err); // Loggar felet
+        res.status(500).json({ error: err.message }); // Skicka tillbaka felet
     }
 });
 
@@ -62,7 +65,7 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true,
 })
 .then(() => console.log('MongoDB connected'))
-.catch(err => console.error(err));
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Enkel test-API
 app.get('/', (req, res) => {
